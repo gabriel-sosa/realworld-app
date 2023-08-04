@@ -8,7 +8,7 @@ importers:
 
   .: {}
 
-  packages/api-specs:
+  packages/realworld-bff-types:
     devDependencies:
       openapi-typescript:
         specifier: ^6.4.0
