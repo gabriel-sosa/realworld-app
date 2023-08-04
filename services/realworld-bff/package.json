@@ -1,8 +1,8 @@
 {
-  "name": "@services/backend",
+  "name": "@services/realworld-bff",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node index.ts",
