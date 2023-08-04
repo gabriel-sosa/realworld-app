@@ -1,0 +1,15 @@
+{
+  "name": "@packages/api-specs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "generated/index.d.ts",
+  "scripts": {
+    "generate": "openapi-typescript ./openapi.yml -o ./generated/index.d.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "openapi-typescript": "^6.4.0"
+  }
+}
