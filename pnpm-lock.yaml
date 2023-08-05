@@ -25,6 +25,10 @@ importers:
       ts-node:
         specifier: ^10.9.1
         version: 10.9.1(@types/node@20.4.7)(typescript@5.1.6)
+    devDependencies:
+      '@packages/realworld-bff-types':
+        specifier: workspace:^
+        version: link:../../packages/realworld-bff-types
 
 packages:
 
