@@ -5,8 +5,8 @@
   "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node index.ts",
-    "dev": "ts-node-dev --inspect -- ./src/index.ts"
+    "start": "ts-node ./src/index.ts",
+    "dev": "ts-node-dev --inspect -r dotenv/config -- ./src/index.ts dotenv_config_path=config/.env.dev"
   },
   "keywords": [],
   "author": "",
