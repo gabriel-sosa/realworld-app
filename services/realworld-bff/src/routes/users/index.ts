@@ -1,17 +1,17 @@
 import express, { type Response, type Request } from "express";
 import type { components } from "@packages/realworld-bff-types";
 
-import type { UserService } from "../../services";
+import type { GetUser } from "../../services";
 
 const userRouter = express.Router();
 
-const getUserHandler = (
+const getUserHandler = async (
   _: Request,
-  res: Response<components["schemas"]["User"], { userService: UserService }>
+  res: Response<components["schemas"]["User"], { userService: GetUser }>
 ) => {
   const { userService } = res.locals;
 
-  res.json(userService.getUser());
+  res.json(await userService.getUser());
 };
 
 const postUserLoginHandler = () => {
