@@ -7,7 +7,7 @@ const userRouter = express.Router();
 
 const getUserHandler = async (
   _: Request,
-  res: Response<components["schemas"]["User"], { userService: GetUser }>
+  res: Response<components["schemas"]["User"], { userService: GetUser }>,
 ) => {
   const { userService } = res.locals;
 
@@ -18,8 +18,6 @@ const postUserLoginHandler = () => {
   throw Error("handler not yet implemented");
 };
 
-userRouter
-  .get("/user", getUserHandler)
-  .post("/users/login", postUserLoginHandler);
+userRouter.get("/user", getUserHandler).post("/users/login", postUserLoginHandler);
 
 export { userRouter };
