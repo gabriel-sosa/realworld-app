@@ -12,7 +12,7 @@ export const addContext = (_: Request, res: Response, next: NextFunction) => {
 };
 
 export const errorHandler = (
-  err: any,
+  err: unknown,
   _: Request,
   res: Response,
   next: NextFunction
