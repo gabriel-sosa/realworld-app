@@ -66,6 +66,9 @@ CREATE TABLE likes (
 	user_id integer NOT NULL REFERENCES users(id) ON DELETE CASCADE,
 	article_id integer NOT NULL REFERENCES articles(id) ON DELETE CASCADE
 );
+
+INSERT INTO users(email, username, password)
+VALUES ('seed-user@gmail.com', 'seed-user', 'password');
 `;
 
 await pgClient.query(query);
