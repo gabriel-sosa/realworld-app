@@ -1,20 +1,13 @@
 import express, { type Response, type Request } from "express";
-import type { components } from "@packages/realworld-bff-types";
-
-import type { GetUser } from "../../services";
 
 const userRouter = express.Router();
 
-const getUserHandler = async (
-  _: Request,
-  res: Response<components["schemas"]["User"], { userService: GetUser }>,
-) => {
-  const { userService } = res.locals;
-
+const getUserHandler = async (req: Request, res: Response) => {
+  const { userService } = req.context;
   res.json(await userService.getUser());
 };
 
-const postUserLoginHandler = () => {
+const postUserLoginHandler = () => () => {
   throw Error("handler not yet implemented");
 };
 

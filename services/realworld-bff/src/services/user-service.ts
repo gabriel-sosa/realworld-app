@@ -1,11 +1,14 @@
-import type { components } from "@packages/realworld-bff-types";
+import type { Client } from "pg";
+import * as types from "../types";
 
-export type GetUser = {
-  getUser: () => Promise<components["schemas"]["User"]>;
-};
+export class UserService implements types.UserService {
+  constructor(private db: Client) {}
 
-export class UserService implements GetUser {
   public async getUser() {
+    await this.db.connect();
+    const res = await this.db.query("SELECT * FROM users;");
+    console.log(res);
+    await this.db.end();
     return {
       email: "string",
       token: "string",
