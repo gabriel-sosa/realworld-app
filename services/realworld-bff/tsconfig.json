@@ -1,3 +1,16 @@
 {
-    "extends": "../../tsconfig"
+  "extends": "../../tsconfig",
+  "compilerOptions": {
+    "typeRoots": ["./src/types/express.d.ts"],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "outDir": "dist",
+    "sourceMap": true,
+    "lib": ["es2023"],
+    "module": "Node16",
+    "target": "es2022",
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node16"
+  },
+  "include": ["src/**/*.ts"]
 }
