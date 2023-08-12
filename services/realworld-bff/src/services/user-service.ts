@@ -1,24 +1,28 @@
 import { DatabaseError, type Pool } from "pg";
 import { hash } from "bcrypt";
+import { sign, verify } from "jsonwebtoken";
 import type { components } from "@packages/realworld-bff-types";
 
 import { InsertError } from "../errors";
-import type * as types from "../types";
+import { JwtPayloadSchema, JwtPayload } from "../schemas";
+import type { UserService as UserServiceType } from "../types";
 import type { Config } from "../schemas";
 
 type DbUser = {
   id: number;
   email: string;
   username: string;
+  bio: string;
+  image: string;
 };
 
 const insertUserQuery = (email: string, username: string, password: string) => ({
   name: "insert-new-user",
-  text: "INSERT INTO users(email, username, password) VALUES ($1, $2, $3) RETURNING id, email, username;",
+  text: "INSERT INTO users(email, username, password) VALUES ($1, $2, $3) RETURNING id, email, username, bio, image;",
   values: [email, username, password],
 });
 
-export class UserService implements types.UserService {
+export class UserService implements UserServiceType {
   constructor(
     private db: Pool,
     private config: Config,
@@ -37,9 +41,7 @@ export class UserService implements types.UserService {
     };
   }
 
-  public async createUser(
-    user: components["schemas"]["NewUser"],
-  ): Promise<components["schemas"]["User"]> {
+  public async createUser(user: components["schemas"]["NewUser"]) {
     const hashedPassword = await hash(user.password, this.config.BCRYPT_SALT_ROUNDS);
 
     try {
@@ -50,11 +52,11 @@ export class UserService implements types.UserService {
       if (!dbUser) throw Error("No user returned from database");
 
       return {
-        email: user.email,
-        token: "string",
-        username: user.username,
-        bio: "",
-        image: "",
+        email: dbUser.email,
+        username: dbUser.username,
+        bio: dbUser.bio,
+        image: dbUser.image,
+        token: this.generateJwtToken(dbUser),
       };
     } catch (err) {
       // handle unique constrains db errors
@@ -69,5 +71,18 @@ export class UserService implements types.UserService {
 
       throw err;
     }
+  }
+
+  public verifyJwtToken(token: string) {
+    const payload = verify(token, this.config.JWT_SECRET);
+
+    return JwtPayloadSchema.parse(payload);
+  }
+
+  private generateJwtToken({ id, email, username }: JwtPayload) {
+    return sign({ id, email, username }, this.config.JWT_SECRET, {
+      algorithm: "HS256",
+      expiresIn: "1h",
+    });
   }
 }

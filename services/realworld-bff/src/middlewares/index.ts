@@ -4,7 +4,7 @@ import type { Request, Response, NextFunction } from "express";
 
 import { UserService } from "../services";
 import { InsertError } from "../errors";
-import type { Config } from "../schemas";
+import type { Config, JwtPayload } from "../schemas";
 
 export const addContext = (config: Config) => {
   const pgPool = new Pool({
@@ -19,8 +19,19 @@ export const addContext = (config: Config) => {
 
   return (req: Request, _: Response, next: NextFunction) => {
     const userService = new UserService(pgPool, config);
+    const authHeader = req.header("Authorization");
+    let jwtPayload: JwtPayload | null = null;
 
-    req.context = { config, userService };
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      const [, token] = authHeader.split(" ");
+      try {
+        jwtPayload = userService.verifyJwtToken(token ?? "");
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    req.context = { config, userService, jwtPayload };
     next();
   };
 };

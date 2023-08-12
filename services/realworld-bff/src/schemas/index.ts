@@ -9,6 +9,15 @@ export const ConfigSchema = z.object({
   POSTGRES_DB: z.string(),
   POSTGRES_PORT: z.string().transform((val) => parseInt(val)),
   BCRYPT_SALT_ROUNDS: z.string().transform((val) => parseInt(val)),
+  JWT_SECRET: z.string(),
 });
 
 export type Config = z.infer<typeof ConfigSchema>;
+
+export const JwtPayloadSchema = z.object({
+  id: z.number(),
+  email: z.string(),
+  username: z.string(),
+});
+
+export type JwtPayload = z.infer<typeof JwtPayloadSchema>;
