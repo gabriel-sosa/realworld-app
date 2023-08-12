@@ -8,6 +8,7 @@ export const ConfigSchema = z.object({
   POSTGRES_USER: z.string(),
   POSTGRES_DB: z.string(),
   POSTGRES_PORT: z.string().transform((val) => parseInt(val)),
+  BCRYPT_SALT_ROUNDS: z.string().transform((val) => parseInt(val)),
 });
 
 export type Config = z.infer<typeof ConfigSchema>;

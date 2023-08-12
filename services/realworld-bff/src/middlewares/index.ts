@@ -18,7 +18,7 @@ export const addContext = (config: Config) => {
   });
 
   return (req: Request, _: Response, next: NextFunction) => {
-    const userService = new UserService(pgPool);
+    const userService = new UserService(pgPool, config);
 
     req.context = { config, userService };
     next();
