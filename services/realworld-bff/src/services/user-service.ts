@@ -1,14 +1,13 @@
-import type { Client } from "pg";
+import type { Pool } from "pg";
 import * as types from "../types";
 
 export class UserService implements types.UserService {
-  constructor(private db: Client) {}
+  constructor(private db: Pool) {}
 
   public async getUser() {
-    await this.db.connect();
     const res = await this.db.query("SELECT * FROM users;");
     console.log(res);
-    await this.db.end();
+
     return {
       email: "string",
       token: "string",
