@@ -12,6 +12,7 @@ app.get("/ping", (_, res) => {
 });
 
 app
+  .use(express.json())
   .use(addContext(config))
   .use(userRouter)
   .use(errorHandler)

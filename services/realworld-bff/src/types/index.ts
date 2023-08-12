@@ -4,6 +4,7 @@ import type { Config } from "../schemas";
 
 export type UserService = {
   getUser(): Promise<components["schemas"]["User"]>;
+  createUser(user: components["schemas"]["NewUser"]): Promise<components["schemas"]["User"]>;
 };
 
 export type Context = {

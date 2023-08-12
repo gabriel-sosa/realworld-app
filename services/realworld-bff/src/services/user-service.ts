@@ -1,5 +1,20 @@
-import type { Pool } from "pg";
-import * as types from "../types";
+import { DatabaseError, type Pool } from "pg";
+import type { components } from "@packages/realworld-bff-types";
+
+import { InsertError } from "../errors";
+import type * as types from "../types";
+
+type DbUser = {
+  id: number;
+  email: string;
+  username: string;
+};
+
+const insertUserQuery = (email: string, username: string, password: string) => ({
+  name: "insert-new-user",
+  text: "INSERT INTO users(email, username, password) VALUES ($1, $2, $3) RETURNING id, email, username;",
+  values: [email, username, password],
+});
 
 export class UserService implements types.UserService {
   constructor(private db: Pool) {}
@@ -15,5 +30,36 @@ export class UserService implements types.UserService {
       bio: "string",
       image: "string",
     };
+  }
+
+  public async createUser(
+    user: components["schemas"]["NewUser"],
+  ): Promise<components["schemas"]["User"]> {
+    try {
+      const {
+        rows: [dbUser],
+      } = await this.db.query<DbUser>(insertUserQuery(user.email, user.username, user.password));
+
+      if (!dbUser) throw Error("No user returned from database");
+
+      return {
+        email: user.email,
+        token: "string",
+        username: user.username,
+        bio: "string",
+        image: "string",
+      };
+    } catch (err) {
+      if (err instanceof DatabaseError && err.code === "23505") {
+        switch (err.constraint) {
+          case "users_username_key":
+            throw new InsertError(`username ${user.username} already in use`);
+          case "users_email_key":
+            throw new InsertError(`email ${user.email} already in use`);
+        }
+      }
+
+      throw err;
+    }
   }
 }

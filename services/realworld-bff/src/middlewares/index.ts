@@ -3,6 +3,7 @@ import { ZodError } from "zod";
 import type { Request, Response, NextFunction } from "express";
 
 import { UserService } from "../services";
+import { InsertError } from "../errors";
 import type { Config } from "../schemas";
 
 export const addContext = (config: Config) => {
@@ -38,9 +39,15 @@ const zodErrorToStringArray = (err: ZodError): string[] => {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const errorHandler = async (err: unknown, _: Request, res: Response, __: NextFunction) => {
   if (err instanceof ZodError) {
-    res.json({ error: zodErrorToStringArray(err) });
+    res.status(422).json({ errors: zodErrorToStringArray(err) });
     return;
   }
 
-  res.json({ errors: ["Unexpected internal error"] });
+  if (err instanceof InsertError) {
+    res.status(422).json({ errors: [err.message] });
+    return;
+  }
+
+  console.error(err);
+  res.status(500).json({ errors: ["Unexpected internal error"] });
 };
