@@ -1,7 +1,6 @@
-import { type Response, type Request } from "express";
 import { z } from "zod";
 
-import type { operations } from "@packages/realworld-bff-types";
+import type { RouteHandler } from "../../types";
 
 const CreateUserRequestSchema = z.object({
   user: z.object({
@@ -11,10 +10,7 @@ const CreateUserRequestSchema = z.object({
   }),
 });
 
-export const createUserHandler = async (
-  req: Request,
-  res: Response<operations["CreateUser"]["responses"][201]["content"]["application/json"]>,
-) => {
+export const createUserHandler: RouteHandler<"/users", "post"> = async (req, res) => {
   const validatedBody = CreateUserRequestSchema.parse(req.body);
 
   const { userService, tokenService } = req.context;

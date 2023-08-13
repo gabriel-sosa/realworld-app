@@ -1,4 +1,5 @@
-import type { components } from "@packages/realworld-bff-types";
+import type { Response as ExpressResponse, Request } from "express";
+import type { components, paths } from "@packages/realworld-bff-types";
 
 import type { Config, Auth } from "../schemas";
 import type {
@@ -29,3 +30,20 @@ export type Context = {
   userService: UserService;
   tokenService: TokenService;
 };
+
+type ExtractResponse<T extends Record<string, unknown>> = T extends { "application/json": unknown }
+  ? T["application/json"]
+  : T;
+
+type Response<T extends keyof paths, U extends keyof paths[T]> = ExpressResponse<
+  paths[T][U] extends { responses: Record<number, infer V> }
+    ? V extends { content: Record<string, unknown> }
+      ? ExtractResponse<V["content"]>
+      : never
+    : never
+>;
+
+export type RouteHandler<T extends keyof paths, U extends keyof paths[T]> = (
+  req: Request,
+  res: Response<T, U>,
+) => void;
