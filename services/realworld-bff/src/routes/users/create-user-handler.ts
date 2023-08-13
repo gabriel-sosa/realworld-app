@@ -15,10 +15,11 @@ export const createUserHandler = async (
   req: Request,
   res: Response<operations["CreateUser"]["responses"][201]["content"]["application/json"]>,
 ) => {
-  const { userService } = req.context;
-
   const validatedBody = CreateUserRequestSchema.parse(req.body);
 
-  const user = await userService.createUser(validatedBody.user);
-  res.status(201).json({ user });
+  const { userService, authService } = req.context;
+  const { email, username, bio, image, id } = await userService.createUser(validatedBody.user);
+  const token = authService.generateToken({ id, email, username });
+
+  res.status(201).json({ user: { email, username, bio, image, token } });
 };

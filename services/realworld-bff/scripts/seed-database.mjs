@@ -19,15 +19,15 @@ DROP TABLE IF EXISTS articles;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS tags;
 
-
-
 CREATE TABLE users (
 	id serial PRIMARY KEY,
 	email varchar(256) UNIQUE NOT NULL,
 	username varchar(36) UNIQUE NOT NULL,
 	bio varchar(3500) DEFAULT '',
 	image varchar(256) DEFAULT '',
-	password varchar(256) NOT NULL
+	password varchar(256) NOT NULL,
+	created_at timestamp DEFAULT NOW(),
+	updated_at timestamp DEFAULT NOW()
 );
 
 CREATE TABLE articles (
@@ -36,15 +36,15 @@ CREATE TABLE articles (
 	slug varchar UNIQUE NOT NULL,
 	description text NOT NULL,
 	body text NOT NULL,
-	created_at timestamp NOT NULL DEFAULT NOW(),
-	updated_at timestamp NOT NULL DEFAULT NOW(),
+	created_at timestamp DEFAULT NOW(),
+	updated_at timestamp DEFAULT NOW(),
 	author_id integer NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE comments (
 	id serial PRIMARY KEY,
-	created_at timestamp NOT NULL DEFAULT NOW(),
-	updated_at timestamp NOT NULL DEFAULT NOW(),
+	created_at timestamp DEFAULT NOW(),
+	updated_at timestamp DEFAULT NOW(),
 	body text NOT NULL,
 	author_id integer NOT NULL REFERENCES users(id) ON DELETE CASCADE,
 	article_id integer NOT NULL REFERENCES articles(id) ON DELETE CASCADE
@@ -53,8 +53,8 @@ CREATE TABLE comments (
 CREATE TABLE tags (
 	id serial PRIMARY KEY,
 	name varchar(256) UNIQUE NOT NULL,
-	created_at timestamp NOT NULL DEFAULT NOW(),
-	updated_at timestamp NOT NULL DEFAULT NOW()
+	created_at timestamp DEFAULT NOW(),
+	updated_at timestamp DEFAULT NOW()
 );
 
 CREATE TABLE article_tags (

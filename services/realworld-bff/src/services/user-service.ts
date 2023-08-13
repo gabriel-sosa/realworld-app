@@ -1,26 +1,11 @@
 import { DatabaseError, type Pool } from "pg";
 import { hash } from "bcrypt";
-import { sign, verify } from "jsonwebtoken";
 import type { components } from "@packages/realworld-bff-types";
 
 import { InsertError } from "../errors";
-import { JwtPayloadSchema, JwtPayload } from "../schemas";
+import { insertUserQuery, type InsertUserQueryReturn } from "../queries";
 import type { UserService as UserServiceType } from "../types";
 import type { Config } from "../schemas";
-
-type DbUser = {
-  id: number;
-  email: string;
-  username: string;
-  bio: string;
-  image: string;
-};
-
-const insertUserQuery = (email: string, username: string, password: string) => ({
-  name: "insert-new-user",
-  text: "INSERT INTO users(email, username, password) VALUES ($1, $2, $3) RETURNING id, email, username, bio, image;",
-  values: [email, username, password],
-});
 
 export class UserService implements UserServiceType {
   constructor(
@@ -47,17 +32,13 @@ export class UserService implements UserServiceType {
     try {
       const {
         rows: [dbUser],
-      } = await this.db.query<DbUser>(insertUserQuery(user.email, user.username, hashedPassword));
+      } = await this.db.query<InsertUserQueryReturn>(
+        insertUserQuery(user.email, user.username, hashedPassword),
+      );
 
       if (!dbUser) throw Error("No user returned from database");
 
-      return {
-        email: dbUser.email,
-        username: dbUser.username,
-        bio: dbUser.bio,
-        image: dbUser.image,
-        token: this.generateJwtToken(dbUser),
-      };
+      return dbUser;
     } catch (err) {
       // handle unique constrains db errors
       if (err instanceof DatabaseError && err.code === "23505") {
@@ -71,18 +52,5 @@ export class UserService implements UserServiceType {
 
       throw err;
     }
-  }
-
-  public verifyJwtToken(token: string) {
-    const payload = verify(token, this.config.JWT_SECRET);
-
-    return JwtPayloadSchema.parse(payload);
-  }
-
-  private generateJwtToken({ id, email, username }: JwtPayload) {
-    return sign({ id, email, username }, this.config.JWT_SECRET, {
-      algorithm: "HS256",
-      expiresIn: "1h",
-    });
   }
 }
