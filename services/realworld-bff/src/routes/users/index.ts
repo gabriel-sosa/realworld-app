@@ -1,6 +1,7 @@
 import express, { type Response, type Request } from "express";
 
 import { createUserHandler } from "./create-user-handler";
+import { loginHandler } from "./login-handler";
 
 const userRouter = express.Router();
 
@@ -9,13 +10,9 @@ const getUserHandler = async (req: Request, res: Response) => {
   res.json(await userService.getUser());
 };
 
-const postUserLoginHandler = () => {
-  throw Error("handler not yet implemented");
-};
-
 userRouter
   .get("/user", getUserHandler)
   .post("/users", createUserHandler)
-  .post("/users/login", postUserLoginHandler);
+  .post("/users/login", loginHandler);
 
 export { userRouter };

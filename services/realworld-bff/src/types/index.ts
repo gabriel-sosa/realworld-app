@@ -1,11 +1,12 @@
 import type { components } from "@packages/realworld-bff-types";
 
 import type { Config, JwtPayload } from "../schemas";
-import type { InsertUserQueryReturn } from "../queries";
+import type { InsertUserQueryReturn, SelectUserByEmailReturn } from "../queries";
 
 export type UserService = {
   getUser(): Promise<components["schemas"]["User"]>;
   createUser(user: components["schemas"]["NewUser"]): Promise<InsertUserQueryReturn>;
+  authenticateUser(email: string, password: string): Promise<SelectUserByEmailReturn>;
 };
 
 export type AuthService = {

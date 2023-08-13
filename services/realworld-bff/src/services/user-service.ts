@@ -1,9 +1,14 @@
 import { DatabaseError, type Pool } from "pg";
-import { hash } from "bcrypt";
+import { hash, compare } from "bcrypt";
 import type { components } from "@packages/realworld-bff-types";
 
 import { InsertError } from "../errors";
-import { insertUserQuery, type InsertUserQueryReturn } from "../queries";
+import {
+  insertUserQuery,
+  selectUserByEmail,
+  type InsertUserQueryReturn,
+  type SelectUserByEmailReturn,
+} from "../queries";
 import type { UserService as UserServiceType } from "../types";
 import type { Config } from "../schemas";
 
@@ -52,5 +57,17 @@ export class UserService implements UserServiceType {
 
       throw err;
     }
+  }
+
+  public async authenticateUser(email: string, password: string) {
+    const {
+      rows: [user],
+    } = await this.db.query<SelectUserByEmailReturn>(selectUserByEmail(email));
+    if (!user) throw Error("no user found");
+
+    const passwordsMatch = await compare(password, user.password);
+    if (!passwordsMatch) throw Error("wrong password");
+
+    return user;
   }
 }
