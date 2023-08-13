@@ -14,10 +14,10 @@ export const ConfigSchema = z.object({
 
 export type Config = z.infer<typeof ConfigSchema>;
 
-export const JwtPayloadSchema = z.object({
+export const AuthSchema = z.object({
   id: z.number(),
   email: z.string(),
   username: z.string(),
 });
 
-export type JwtPayload = z.infer<typeof JwtPayloadSchema>;
+export type Auth = z.infer<typeof AuthSchema>;

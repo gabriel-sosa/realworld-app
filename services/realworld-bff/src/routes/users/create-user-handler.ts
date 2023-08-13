@@ -17,9 +17,9 @@ export const createUserHandler = async (
 ) => {
   const validatedBody = CreateUserRequestSchema.parse(req.body);
 
-  const { userService, authService } = req.context;
+  const { userService, tokenService } = req.context;
   const { email, username, bio, image, id } = await userService.createUser(validatedBody.user);
-  const token = authService.generateToken({ id, email, username });
+  const token = tokenService.generateToken({ id, email, username });
 
   res.status(201).json({ user: { email, username, bio, image, token } });
 };

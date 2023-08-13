@@ -2,7 +2,8 @@ import { Pool } from "pg";
 import type { Request, Response, NextFunction } from "express";
 
 import { UserService, TokenService } from "../services";
-import type { Config, JwtPayload } from "../schemas";
+import type { Config } from "../schemas";
+import type { Context } from "../types";
 
 export const addContext = (config: Config) => {
   const pgPool = new Pool({
@@ -17,22 +18,23 @@ export const addContext = (config: Config) => {
 
   return (req: Request, _: Response, next: NextFunction) => {
     const userService = new UserService(pgPool, config);
-    const authService = new TokenService(config);
+    const tokenService = new TokenService(config);
     const authHeader = req.header("Authorization");
-    let jwtPayload: JwtPayload | null = null;
+    let auth: Context["auth"] = null;
 
     if (authHeader && authHeader.startsWith("Bearer ")) {
       const [, token] = authHeader.split(" ");
       try {
         if (!token) throw Error("No token");
 
-        jwtPayload = authService.verifyToken(token);
+        const payload = tokenService.verifyToken(token);
+        auth = { ...payload, token };
       } catch (err) {
         console.error(err);
       }
     }
 
-    req.context = { config, userService, jwtPayload, authService };
+    req.context = { config, userService, auth, tokenService };
     next();
   };
 };

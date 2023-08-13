@@ -6,8 +6,10 @@ import { InsertError, AuthenticationError } from "../errors";
 import {
   insertUserQuery,
   selectUserByEmail,
+  selectUserById,
   type InsertUserQueryReturn,
   type SelectUserByEmailReturn,
+  type SelectUserByIdReturn,
 } from "../queries";
 import type { UserService as UserServiceType } from "../types";
 import type { Config } from "../schemas";
@@ -17,19 +19,6 @@ export class UserService implements UserServiceType {
     private db: Pool,
     private config: Config,
   ) {}
-
-  public async getUser() {
-    const res = await this.db.query("SELECT * FROM users;");
-    console.log(res);
-
-    return {
-      email: "string",
-      token: "string",
-      username: "string",
-      bio: "string",
-      image: "string",
-    };
-  }
 
   public async createUser(user: components["schemas"]["NewUser"]) {
     const hashedPassword = await hash(user.password, this.config.BCRYPT_SALT_ROUNDS);
@@ -67,6 +56,16 @@ export class UserService implements UserServiceType {
 
     const passwordsMatch = await compare(password, user.password);
     if (!passwordsMatch) throw new AuthenticationError("wrong password");
+
+    return user;
+  }
+
+  public async getUserById(id: number) {
+    const {
+      rows: [user],
+    } = await this.db.query<SelectUserByIdReturn>(selectUserById(id));
+
+    if (!user) throw Error("user not found");
 
     return user;
   }

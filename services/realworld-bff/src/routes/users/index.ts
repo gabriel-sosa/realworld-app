@@ -1,17 +1,13 @@
-import express, { type Response, type Request } from "express";
+import express from "express";
 
 import { createUserHandler } from "./create-user-handler";
 import { loginHandler } from "./login-handler";
+import { getCurrentUserHandler } from "./get-current-user-handler";
 
 const userRouter = express.Router();
 
-const getUserHandler = async (req: Request, res: Response) => {
-  const { userService } = req.context;
-  res.json(await userService.getUser());
-};
-
 userRouter
-  .get("/user", getUserHandler)
+  .get("/user", getCurrentUserHandler)
   .post("/users", createUserHandler)
   .post("/users/login", loginHandler);
 

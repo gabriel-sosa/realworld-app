@@ -15,12 +15,12 @@ export const loginHandler = async (
   res: Response<operations["Login"]["responses"][200]["content"]["application/json"]>,
 ) => {
   const { user } = LoginRequestSchema.parse(req.body);
-  const { userService, authService } = req.context;
+  const { userService, tokenService } = req.context;
 
   const { id, email, username, bio, image } = await userService.authenticateUser(
     user.email,
     user.password,
   );
-  const token = authService.generateToken({ id, username, email });
+  const token = tokenService.generateToken({ id, username, email });
   res.status(200).json({ user: { email, username, bio, image, token } });
 };
