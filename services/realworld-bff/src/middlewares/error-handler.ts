@@ -16,16 +16,22 @@ const zodErrorToStringArray = (err: ZodError): string[] => {
 // Even if we don't need the next function inside the error handler, express needs the function to have 4 arguments to know is an error handler
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const errorHandler = async (err: unknown, _: Request, res: Response, __: NextFunction) => {
+  console.log(err);
+
   if (err instanceof ZodError) {
     res.status(422).json({ errors: zodErrorToStringArray(err) });
     return;
   }
 
-  if (err instanceof InsertError || err instanceof AuthenticationError) {
+  if (err instanceof InsertError) {
     res.status(422).json({ errors: [err.message] });
     return;
   }
 
-  console.error(err);
+  if (err instanceof AuthenticationError) {
+    res.status(401).json({});
+    return;
+  }
+
   res.status(500).json({ errors: ["Unexpected internal error"] });
 };
