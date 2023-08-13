@@ -7,9 +7,11 @@ import {
   insertUserQuery,
   selectUserByEmail,
   selectUserById,
+  updateUserById,
   type InsertUserQueryReturn,
   type SelectUserByEmailReturn,
   type SelectUserByIdReturn,
+  type UpdateUserByIdReturn,
 } from "../queries";
 import type { UserService as UserServiceType } from "../types";
 import type { Config } from "../schemas";
@@ -68,5 +70,35 @@ export class UserService implements UserServiceType {
     if (!user) throw Error("user not found");
 
     return user;
+  }
+
+  public async updateUserById(id: number, user: components["schemas"]["UpdateUser"]) {
+    const hashedPassword = user.password
+      ? await hash(user.password, this.config.BCRYPT_SALT_ROUNDS)
+      : null;
+
+    try {
+      const {
+        rows: [dbUser],
+      } = await this.db.query<UpdateUserByIdReturn>(
+        updateUserById(id, user.email, user.username, user.bio, user.image, hashedPassword),
+      );
+
+      if (!dbUser) throw Error("no user returned");
+
+      return dbUser;
+    } catch (err) {
+      // handle unique constrains db errors
+      if (err instanceof DatabaseError && err.code === "23505") {
+        switch (err.constraint) {
+          case "users_username_key":
+            throw new InsertError(`username ${user.username} already in use`);
+          case "users_email_key":
+            throw new InsertError(`email ${user.email} already in use`);
+        }
+      }
+
+      throw err;
+    }
   }
 }

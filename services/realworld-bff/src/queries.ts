@@ -35,7 +35,27 @@ export type SelectUserByIdReturn = {
 };
 
 export const selectUserById = (id: number) => ({
-  name: "select-user-by-id",
-  text: "SELECT email, username, bio, image FROM users WHERE id = $1;",
+  name: "select-user-by-id" as const,
+  text: "SELECT email, username, bio, image FROM users WHERE id = $1;" as const,
   values: [id],
+});
+
+export type UpdateUserByIdReturn = {
+  email: string;
+  username: string;
+  bio: string;
+  image: string;
+};
+
+export const updateUserById = (
+  id: number,
+  email?: string | null,
+  username?: string | null,
+  bio?: string | null,
+  image?: string | null,
+  password?: string | null,
+) => ({
+  name: "update-user-by-id" as const,
+  text: "UPDATE users SET email = COALESCE($2, email), username = COALESCE($3, username), bio = COALESCE($4, bio), image = COALESCE($5, image), password = COALESCE($6, password), updated_at = NOW() WHERE id = $1 RETURNING email, username, bio, image;" as const,
+  values: [id, email, username, bio, image, password],
 });
