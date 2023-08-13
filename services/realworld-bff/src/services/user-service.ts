@@ -2,7 +2,7 @@ import { DatabaseError, type Pool } from "pg";
 import { hash, compare } from "bcrypt";
 import type { components } from "@packages/realworld-bff-types";
 
-import { InsertError } from "../errors";
+import { InsertError, AuthenticationError } from "../errors";
 import {
   insertUserQuery,
   selectUserByEmail,
@@ -63,10 +63,10 @@ export class UserService implements UserServiceType {
     const {
       rows: [user],
     } = await this.db.query<SelectUserByEmailReturn>(selectUserByEmail(email));
-    if (!user) throw Error("no user found");
+    if (!user) throw new AuthenticationError("no user with email " + email);
 
     const passwordsMatch = await compare(password, user.password);
-    if (!passwordsMatch) throw Error("wrong password");
+    if (!passwordsMatch) throw new AuthenticationError("wrong password");
 
     return user;
   }

@@ -1,7 +1,7 @@
 import { ZodError } from "zod";
 import type { Request, Response, NextFunction } from "express";
 
-import { InsertError } from "../errors";
+import { InsertError, AuthenticationError } from "../errors";
 
 const zodErrorToStringArray = (err: ZodError): string[] => {
   const { formErrors, fieldErrors } = err.flatten();
@@ -21,7 +21,7 @@ export const errorHandler = async (err: unknown, _: Request, res: Response, __: 
     return;
   }
 
-  if (err instanceof InsertError) {
+  if (err instanceof InsertError || err instanceof AuthenticationError) {
     res.status(422).json({ errors: [err.message] });
     return;
   }
