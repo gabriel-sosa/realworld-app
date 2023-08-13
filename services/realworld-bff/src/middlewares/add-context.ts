@@ -1,7 +1,7 @@
 import { Pool } from "pg";
 import type { Request, Response, NextFunction } from "express";
 
-import { UserService, AuthService } from "../services";
+import { UserService, TokenService } from "../services";
 import type { Config, JwtPayload } from "../schemas";
 
 export const addContext = (config: Config) => {
@@ -17,7 +17,7 @@ export const addContext = (config: Config) => {
 
   return (req: Request, _: Response, next: NextFunction) => {
     const userService = new UserService(pgPool, config);
-    const authService = new AuthService(config);
+    const authService = new TokenService(config);
     const authHeader = req.header("Authorization");
     let jwtPayload: JwtPayload | null = null;
 

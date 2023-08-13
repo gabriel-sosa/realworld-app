@@ -9,7 +9,7 @@ export type UserService = {
   authenticateUser(email: string, password: string): Promise<SelectUserByEmailReturn>;
 };
 
-export type AuthService = {
+export type TokenService = {
   verifyToken(token: string): JwtPayload;
   generateToken(payload: JwtPayload): string;
 };
@@ -18,5 +18,5 @@ export type Context = {
   config: Config;
   jwtPayload: JwtPayload | null;
   userService: UserService;
-  authService: AuthService;
+  authService: TokenService;
 };

@@ -1,9 +1,9 @@
 import { sign, verify } from "jsonwebtoken";
 
 import { JwtPayloadSchema, type JwtPayload, type Config } from "../schemas";
-import type { AuthService as AuthServiceType } from "../types";
+import type { TokenService as TokenServiceType } from "../types";
 
-export class AuthService implements AuthServiceType {
+export class TokenService implements TokenServiceType {
   constructor(private config: Config) {}
 
   public verifyToken(token: string) {
