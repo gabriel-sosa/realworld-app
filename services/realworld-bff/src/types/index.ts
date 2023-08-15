@@ -31,16 +31,14 @@ export type Context = {
   tokenService: TokenService;
 };
 
-type ExtractResponse<T extends Record<string, unknown>> = T extends { "application/json": unknown }
-  ? T["application/json"]
-  : T;
-
 type Response<T extends keyof paths, U extends keyof paths[T]> = ExpressResponse<
   paths[T][U] extends { responses: Record<number, infer V> }
-    ? V extends { content: Record<string, unknown> }
-      ? ExtractResponse<V["content"]> extends Record<string, never>
+    ? V extends { content: infer W }
+      ? W extends Record<string, never>
         ? Record<string, never>
-        : ExtractResponse<V["content"]>
+        : W extends { "application/json": infer X }
+        ? X
+        : never
       : never
     : never
 >;
