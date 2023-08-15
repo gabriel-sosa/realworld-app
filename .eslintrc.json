@@ -11,5 +11,5 @@
   "rules": {
     "@typescript-eslint/consistent-type-definitions": ["error", "type"]
   },
-  "ignorePatterns": ["**/generated/"]
+  "ignorePatterns": ["**/generated/", "**/dist/"]
 }
