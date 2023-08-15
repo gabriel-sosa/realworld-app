@@ -38,7 +38,9 @@ type ExtractResponse<T extends Record<string, unknown>> = T extends { "applicati
 type Response<T extends keyof paths, U extends keyof paths[T]> = ExpressResponse<
   paths[T][U] extends { responses: Record<number, infer V> }
     ? V extends { content: Record<string, unknown> }
-      ? ExtractResponse<V["content"]>
+      ? ExtractResponse<V["content"]> extends Record<string, never>
+        ? Record<string, never>
+        : ExtractResponse<V["content"]>
       : never
     : never
 >;

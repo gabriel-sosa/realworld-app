@@ -1,12 +1,7 @@
-import type { Request, Response } from "express";
-import type { operations } from "@packages/realworld-bff-types";
-
 import { AuthenticationError } from "../../errors";
+import type { RouteHandler } from "../../types";
 
-export const getCurrentUserHandler = async (
-  req: Request,
-  res: Response<operations["GetCurrentUser"]["responses"]["200"]["content"]["application/json"]>,
-) => {
+export const getCurrentUserHandler: RouteHandler<"/user", "get"> = async (req, res) => {
   const { auth, userService } = req.context;
   if (!auth) throw new AuthenticationError("not authenticated");
 

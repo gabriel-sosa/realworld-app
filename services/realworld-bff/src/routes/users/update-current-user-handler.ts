@@ -1,8 +1,7 @@
 import { z } from "zod";
-import type { Request, Response } from "express";
-import type { operations } from "@packages/realworld-bff-types";
 
 import { AuthenticationError } from "../../errors";
+import type { RouteHandler } from "../../types";
 
 const UpdateCurrentUserRequestSchema = z.object({
   user: z
@@ -19,10 +18,7 @@ const UpdateCurrentUserRequestSchema = z.object({
     }),
 });
 
-export const updateCurrentUserHandler = async (
-  req: Request,
-  res: Response<operations["UpdateCurrentUser"]["responses"]["200"]["content"]["application/json"]>,
-) => {
+export const updateCurrentUserHandler: RouteHandler<"/user", "put"> = async (req, res) => {
   const { auth, userService } = req.context;
   if (!auth) throw new AuthenticationError("not authenticated");
 
