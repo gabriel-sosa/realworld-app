@@ -1,7 +1,7 @@
 import express from "express";
 
 import { userRouter } from "./routes";
-import { errorHandler, addContext } from "./middlewares";
+import { errorHandler, addContext, requestLogger } from "./middlewares";
 import { ConfigSchema } from "./schemas";
 
 const config = ConfigSchema.parse(process.env);
@@ -14,6 +14,7 @@ app.get("/ping", (_, res) => {
 app
   .use(express.json())
   .use(addContext(config))
+  .use(requestLogger)
   .use(userRouter)
   .use(errorHandler)
   .listen(process.env.PORT, () => {

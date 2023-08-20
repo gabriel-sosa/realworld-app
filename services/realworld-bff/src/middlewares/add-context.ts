@@ -16,6 +16,8 @@ export const addContext = (config: Config) => {
     connectionTimeoutMillis: 10000,
   });
 
+  const logger = console;
+
   return (req: Request, _: Response, next: NextFunction) => {
     const userService = new UserService(pgPool, config);
     const tokenService = new TokenService(config);
@@ -30,11 +32,11 @@ export const addContext = (config: Config) => {
         const payload = tokenService.verifyToken(token);
         auth = { ...payload, token };
       } catch (err) {
-        console.error(err);
+        logger.error(err);
       }
     }
 
-    req.context = { config, userService, auth, tokenService };
+    req.context = { config, userService, auth, tokenService, logger };
     next();
   };
 };

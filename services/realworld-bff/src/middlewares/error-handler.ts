@@ -15,8 +15,9 @@ const zodErrorToStringArray = (err: ZodError): string[] => {
 
 // Even if we don't need the next function inside the error handler, express needs the function to have 4 arguments to know is an error handler
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const errorHandler = async (err: unknown, _: Request, res: Response, __: NextFunction) => {
-  console.log(err);
+export const errorHandler = async (err: unknown, req: Request, res: Response, _: NextFunction) => {
+  const { logger } = req.context;
+  logger.error(err);
 
   if (err instanceof ZodError) {
     res.status(422).json({ errors: zodErrorToStringArray(err) });

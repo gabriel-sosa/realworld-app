@@ -24,11 +24,19 @@ export type TokenService = {
   generateToken(payload: Auth): string;
 };
 
+export type LoggerService = {
+  info(...args: unknown[]): void;
+  warn(...args: unknown[]): void;
+  error(...args: unknown[]): void;
+  debug(...args: unknown[]): void;
+};
+
 export type Context = {
   config: Config;
   auth: null | (Auth & { token: string });
   userService: UserService;
   tokenService: TokenService;
+  logger: LoggerService;
 };
 
 type Response<T extends keyof paths, U extends keyof paths[T]> = ExpressResponse<
