@@ -7,6 +7,8 @@ export default defineConfig({
     exclude: ["**/node_modules/**", "**/dist/**", "**/*.config.*", "**/config/**"],
     coverage: {
       provider: "v8",
+      all: true,
+      include: ["src/**/*.ts"],
     },
   },
 });
