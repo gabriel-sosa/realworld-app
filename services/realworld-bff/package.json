@@ -4,7 +4,8 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest",
+    "coverage": "vitest run --coverage",
     "start": "node dist/index.js",
     "dev": "ts-node-dev --files --inspect -r dotenv/config -- ./src/index.ts dotenv_config_path=config/.env.dev",
     "lint": "eslint src/**/*.ts --fix",
@@ -30,11 +31,14 @@
     "@types/pg": "^8.10.2",
     "@typescript-eslint/eslint-plugin": "^6.2.1",
     "@typescript-eslint/parser": "^6.2.1",
+    "@vitest/coverage-v8": "^0.34.2",
     "dotenv": "^16.3.1",
     "eslint": "^8.46.0",
     "eslint-config-prettier": "^9.0.0",
     "prettier": "^3.0.1",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.1.6"
+    "typescript": "^5.1.6",
+    "vite": "^4.4.9",
+    "vitest": "^0.34.2"
   }
 }
