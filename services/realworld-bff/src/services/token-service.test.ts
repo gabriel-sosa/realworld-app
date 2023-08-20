@@ -12,7 +12,7 @@ const mockJwtPayload = {
   username: "test-username",
 };
 
-describe("token-service", () => {
+describe("TokenService", () => {
   test("verifyToken should verify token", () => {
     vi.mocked<(token: string, secretOrPublicKey: string) => unknown>(verify).mockReturnValue(
       mockJwtPayload,

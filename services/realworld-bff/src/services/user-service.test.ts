@@ -16,7 +16,7 @@ const mockUser = {
   password: "password",
 };
 
-describe("user-service", () => {
+describe("UserService", () => {
   describe("createUser", () => {
     beforeEach(() => {
       vi.mocked<(data: string | Buffer, saltOrRounds: string | number) => Promise<string>>(
