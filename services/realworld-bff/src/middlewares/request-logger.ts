@@ -6,7 +6,6 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction) =
   res.once("finish", () => {
     if (res.statusCode < 400) {
       logger.info(req.method, req.url, res.statusCode, res);
-      logger.info(res);
       return;
     }
 
