@@ -54,4 +54,4 @@ type Response<T extends keyof paths, U extends keyof paths[T]> = ExpressResponse
 export type RouteHandler<T extends keyof paths, U extends keyof paths[T]> = (
   req: Request,
   res: Response<T, U>,
-) => void;
+) => void | Promise<void>;
