@@ -10,7 +10,7 @@ const mockUser = {
 } as const;
 const testToken = "test-token";
 
-describe.only("getCurrentUserHandler", () => {
+describe("getCurrentUserHandler", () => {
   test("if not auth should throw", async () => {
     const req = {
       context: { auth: null },
